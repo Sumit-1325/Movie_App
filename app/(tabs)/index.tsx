@@ -1,31 +1,33 @@
-import { ScrollView, Image, Text, View, ActivityIndicator, FlatList } from "react-native";
+import {
+  ScrollView,
+  Image,
+  Text,
+  View,
+  ActivityIndicator,
+  FlatList,
+} from "react-native";
 import { images } from "@/constants/images";
 import { icons } from "@/constants/icons";
 import SearchBar from "@/components/SearchBar";
-import MovieCard from "@/components/MovieCard"; 
+import MovieCard from "@/components/MovieCard";
 import { useRouter } from "expo-router";
 import { useState, useEffect } from "react";
 import useFetch from "@/services/useFetch";
-import { getHomeMovies, WatchmodeMovie } from "@/services/api"; 
-
+import { getHomeMovies, Movie } from "@/services/api";
 export default function Index() {
-  const [searchText, setSearchText] = useState<string>('');
+  const [searchText, setSearchText] = useState<string>("");
   const router = useRouter();
 
   const {
-  data: movies,
-  loading: moviesLoading,
-  error: moviesError,
-  refetch,
-} = useFetch<WatchmodeMovie[], (query?: string, page?: number) => Promise<WatchmodeMovie[]>>(
-  getHomeMovies,
-  true,
-  [searchText] 
-);
+    data: movies,
+    loading: moviesLoading,
+    error: moviesError,
+    refetch,
+  } = useFetch<Movie[], any>(getHomeMovies, true, [""]);
 
-useEffect(() => {
-  refetch(searchText); 
-}, [searchText]);
+  useEffect(() => {
+    refetch(searchText);
+  }, [searchText]);
 
   return (
     <View className="flex-1 bg-primary">
@@ -42,14 +44,12 @@ useEffect(() => {
       >
         <Image source={icons.logo} className="w-12 h-10 mt-20 mb-5 mx-auto" />
 
-        <View className="flex-1 mt-5">
+        <View className="mt-5 w-full">
+          {" "}
           <SearchBar
-            onPress={() => {
-              router.push("/search");
-            }}
+            onPress={() => router.push("/search")}
             placeholder="Search for a movie"
           />
-
           {moviesLoading ? (
             <ActivityIndicator
               size="large"
@@ -65,14 +65,13 @@ useEffect(() => {
               </Text>
 
               <FlatList
-                data={movies || []} 
+                data={movies || []}
                 renderItem={({ item }) => <MovieCard {...item} />}
                 keyExtractor={(item) => item.id.toString()}
                 numColumns={3}
                 columnWrapperStyle={{
                   justifyContent: "flex-start",
-                  gap: 20,
-                  paddingRight: 5,
+                  gap: 12, // Reduced gap slightly for 3 columns
                   marginBottom: 10,
                 }}
                 className="mt-2 pb-32"
