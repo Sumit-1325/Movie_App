@@ -1,4 +1,3 @@
-import { fetch } from "react-native-fetch-api";
 
 const API_KEY = process.env.EXPO_PUBLIC_OMDB_API_KEY;
 const BASE_URL = "https://www.omdbapi.com/";
@@ -10,18 +9,23 @@ export interface Movie {
   release_date: string;
 }
 
+// services/api.ts
 export async function getMovies(query: string = "Marvel"): Promise<Movie[]> {
-  if (!API_KEY) {
-    console.error("Missing EXPO_PUBLIC_OMDB_API_KEY in .env file");
-    return [];
-  }
+  const API_KEY = process.env.EXPO_PUBLIC_OMDB_API_KEY;
+  const BASE_URL = "https://www.omdbapi.com/";
 
-  const searchTerm = query.trim() === "" ? "Marvel" : query;
-  const url = `${BASE_URL}?apikey=${API_KEY}&s=${encodeURIComponent(searchTerm)}&type=movie`;
+  const key = API_KEY || ""; 
+  const safeQuery = (query || "Marvel").toString();
+  const url = `${BASE_URL}?apikey=${key}&s=${encodeURIComponent(safeQuery)}&type=movie`;
 
   try {
     const response = await fetch(url);
     const data = await response.json();
+
+    // ADD THIS LOG to see the actual error message from OMDb
+    if (data.Response === "False") {
+      console.log("OMDb Error Message:", data.Error);
+    }
 
     if (data.Response === "True" && data.Search) {
       return data.Search.map((item: any) => ({
@@ -33,7 +37,6 @@ export async function getMovies(query: string = "Marvel"): Promise<Movie[]> {
     }
     return [];
   } catch (error) {
-    console.error("Fetch error:", error);
     return [];
   }
 }

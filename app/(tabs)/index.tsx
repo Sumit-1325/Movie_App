@@ -1,8 +1,10 @@
-import { View, Text, FlatList, ActivityIndicator, Image } from "react-native";
+import { ScrollView,View, Text, FlatList, ActivityIndicator, Image } from "react-native";
 import { useState, useEffect } from "react";
 import SearchBar from "@/components/SearchBar";
 import MovieCard from "@/components/MovieCard";
 import { getMovies, Movie } from "@/services/api";
+import { icons } from "@/constants/icons";
+import { images } from "@/constants/images";
 import useFetch from "@/services/useFetch";
 
 export default function Index() {
@@ -25,15 +27,20 @@ export default function Index() {
   }, [searchText]);
 
   return (
-    <View className="flex-1 bg-black px-4 pt-10">
-      <Text className="text-white text-2xl font-bold mb-4 mt-10">Movies</Text>
-      
+    <View className="flex-1 bg-primary w-full ">
+      <Image source={images.bg} className="absolute w-full z-0" resizeMode="cover" />
+
+      <View className="flex-1 px-5 min-h-100% pb-10">
+        
+        <Image source={icons.logo} className="w-12 h-10 mt-20 mb-5 mx-auto" />
+    <View className="flex-1 bg-black mt-5 mb-5 ">
       <SearchBar
         placeholder="Search..."
         value={searchText}
         onChangeText={(text) => setSearchText(text)}
       />
-
+      <Text className="text-white text-xl font-bold mt-3 mb-2">Movies</Text>
+      
       {loading ? (
         <ActivityIndicator color="white" className="mt-10" />
       ) : (
@@ -46,6 +53,8 @@ export default function Index() {
           ListEmptyComponent={<Text className="text-gray-500 text-center mt-10">No results found.</Text>}
         />
       )}
+    </View>
+    </View>
     </View>
   );
 }
