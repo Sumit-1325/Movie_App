@@ -17,14 +17,14 @@ export default function Index() {
   );
 
   useEffect(() => {
-    const query = searchText.trim() === "" ? "Marvel" : searchText;
-    
-    const timer = setTimeout(() => {
-      refetch(query); 
-    }, 500);
+  const query = searchText.trim(); 
+  
+  const timer = setTimeout(() => {
+    refetch(query); 
+  }, 500);
 
-    return () => clearTimeout(timer);
-  }, [searchText]);
+  return () => clearTimeout(timer);
+}, [searchText]);
 
   return (
     <View className="flex-1 bg-primary w-full ">
